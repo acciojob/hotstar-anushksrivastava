@@ -8,6 +8,8 @@ import com.driver.repository.WebSeriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class WebSeriesService {
 
@@ -23,33 +25,37 @@ public class WebSeriesService {
         //Incase the seriesName is already present in the Db throw Exception("Series is already present")
         //use function written in Repository Layer for the same
         //Dont forget to save the production and webseries Repo
-
         WebSeries webSeries=new WebSeries();
-        webSeries.setSeriesName(webSeriesEntryDto.getSeriesName());
-        webSeries.setAgeLimit(webSeriesEntryDto.getAgeLimit());
-        webSeries.setProductionHouse(productionHouseRepository.findById(webSeriesEntryDto.getProductionHouseId()).get());
-        webSeries.setSubscriptionType(webSeriesEntryDto.getSubscriptionType());
-        webSeries.setRating(webSeriesEntryDto.getRating());
-        if(webSeriesRepository.findBySeriesName(webSeries.getSeriesName())!=null)
+        ProductionHouse productionHouse=productionHouseRepository.findById(webSeriesEntryDto.getProductionHouseId()).get();
+        if(webSeriesRepository.findBySeriesName(webSeriesEntryDto.getSeriesName())!=null)
         {
             throw new Exception("Series is already present");
         }
-        else
-        {
-            webSeriesRepository.save(webSeries);
-            ProductionHouse p=webSeries.getProductionHouse();
-            int n=p.getWebSeriesList().size();
+
+
+        webSeries.setSeriesName(webSeriesEntryDto.getSeriesName());
+        webSeries.setAgeLimit(webSeriesEntryDto.getAgeLimit());
+        webSeries.setSubscriptionType(webSeriesEntryDto.getSubscriptionType());
+        webSeries.setRating(webSeriesEntryDto.getRating());
+
+        double ratings=0.0;
+
+            productionHouse.getWebSeriesList().add(webSeries);
 
 
 
-                double ratings=p.getRatings();
-                ratings=(ratings+webSeries.getRating())/n+1;
-                p.setRatings(ratings);
-               // productionHouseRepository.save(p);
-        }
+List<WebSeries> webSeriesList=productionHouse.getWebSeriesList();
+                for(WebSeries ws:webSeriesList)
+                {
+                    ratings+=ws.getRating();
+                }
+               productionHouse.setRatings(ratings/webSeriesList.size());
+                webSeries.setProductionHouse(productionHouse);
+                int id=webSeriesRepository.save(webSeries).getId();
 
 
-        return null;
+
+        return id;
     }
 
 }

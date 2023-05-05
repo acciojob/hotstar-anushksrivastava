@@ -41,10 +41,15 @@ int count=0;
 for(int i=0;i<webSeriesList.size();i++)
 {
     WebSeries webs=webSeriesList.get(i);
-    if(webs.getSubscriptionType()==s.getSubscription().getSubscriptionType() && webs.getAgeLimit()==s.getAge())
-    {
-        count++;
-    }
+   if(webs.getAgeLimit()<=s.getAge() && s.getSubscription().getSubscriptionType()==SubscriptionType.ELITE)
+   {
+       count++;
+   }
+   else if(webs.getAgeLimit()<=s.getAge() && s.getSubscription().getSubscriptionType()==SubscriptionType.PRO && (webs.getSubscriptionType()==SubscriptionType.PRO ||webs.getSubscriptionType()==SubscriptionType.BASIC)){
+       count++;
+   } else if (webs.getAgeLimit()<=s.getAge() && s.getSubscription().getSubscriptionType()==SubscriptionType.BASIC && (webs.getSubscriptionType()==SubscriptionType.BASIC)) {
+       count++;
+   }
 }
         return count;
     }

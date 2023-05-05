@@ -63,16 +63,20 @@ s.setTotalAmountPaid(amount);
         if(type==SubscriptionType.BASIC)
         {
            subscription.setSubscriptionType(SubscriptionType.PRO);
-            return 350;
+           int diff=800+250*subscription.getNoOfScreensSubscribed()-subscription.getTotalAmountPaid();
+            subscriptionRepository.save(subscription);
+            return diff;
         }
         if(type==SubscriptionType.PRO)
         {
             subscription.setSubscriptionType(SubscriptionType.ELITE);
-            return 300;
+            int diff=1000+350*subscription.getNoOfScreensSubscribed()-subscription.getTotalAmountPaid();
+            subscriptionRepository.save(subscription);
+            return diff;
         }
 
-        subscriptionRepository.save(subscription);
-        return null;
+
+return null;
     }
 
     public Integer calculateTotalRevenueOfHotstar(){

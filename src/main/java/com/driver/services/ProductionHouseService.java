@@ -19,7 +19,7 @@ public class ProductionHouseService {
 p.setRatings(0);
         productionHouseRepository.save(p);
 
-        return  null;
+        return  p.getId();
     }
 
 
