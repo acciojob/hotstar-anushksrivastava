@@ -1,15 +1,16 @@
 package com.driver.model;
 
-
-import jdk.internal.vm.annotation.ChangesCurrentThread;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.CurrentTimestamp;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.Date;
 
-@Entity
 
+@Entity
 @Table
 public class Subscription {
 
@@ -17,13 +18,13 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Enumerated(EnumType.STRING)
+
     private SubscriptionType subscriptionType;
 
     private int noOfScreensSubscribed;
 
 
-    @CreationTimestamp
+
     private Date startSubscriptionDate;
 
     private int totalAmountPaid;
