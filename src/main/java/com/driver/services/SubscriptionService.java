@@ -25,8 +25,27 @@ public class SubscriptionService {
     public Integer buySubscription(SubscriptionEntryDto subscriptionEntryDto){
 
         //Save The subscription Object into the Db and return the total Amount that user has to pay
+        Subscription s=new Subscription();
+        s.setId(subscriptionEntryDto.getUserId());
+        s.setSubscriptionType(subscriptionEntryDto.getSubscriptionType());
+        s.setNoOfScreensSubscribed(subscriptionEntryDto.getNoOfScreensRequired());
 
-        return null;
+        String type=s.getSubscriptionType().toString();
+        int amount=0;
+        if(type==SubscriptionType.BASIC.toString())
+        {
+            amount=500+200*s.getNoOfScreensSubscribed();
+        } else if(type==SubscriptionType.PRO.toString())
+        {
+            amount=800+250*s.getNoOfScreensSubscribed();
+        } else if (type==SubscriptionType.ELITE.toString()) {
+            amount=1000+350*s.getNoOfScreensSubscribed();
+
+        }
+s.setTotalAmountPaid(amount);
+        subscriptionRepository.save(s);
+
+        return amount;
     }
 
     public Integer upgradeSubscription(Integer userId)throws Exception{
@@ -34,7 +53,25 @@ public class SubscriptionService {
         //If you are already at an ElITE subscription : then throw Exception ("Already the best Subscription")
         //In all other cases just try to upgrade the subscription and tell the difference of price that user has to pay
         //update the subscription in the repository
+        User s=userRepository.findById(userId).get();
+        Subscription subscription=s.getSubscription();
+        SubscriptionType type=s.getSubscription().getSubscriptionType();
+        if(type.equals(SubscriptionType.ELITE))
+        {
+           throw new Exception("Already the best Subscription") ;
+        }
+        if(type==SubscriptionType.BASIC)
+        {
+           subscription.setSubscriptionType(SubscriptionType.PRO);
+            return 350;
+        }
+        if(type==SubscriptionType.PRO)
+        {
+            subscription.setSubscriptionType(SubscriptionType.ELITE);
+            return 300;
+        }
 
+        subscriptionRepository.save(subscription);
         return null;
     }
 
@@ -42,8 +79,14 @@ public class SubscriptionService {
 
         //We need to find out total Revenue of hotstar : from all the subscriptions combined
         //Hint is to use findAll function from the SubscriptionDb
+        List<Subscription> subscriptions=subscriptionRepository.findAll();
+        int revenue=0;
+        for(int i=0;i<subscriptions.size();i++)
+        {
+            revenue+=subscriptions.get(i).getTotalAmountPaid();
+        }
 
-        return null;
+        return revenue;
     }
 
 }
