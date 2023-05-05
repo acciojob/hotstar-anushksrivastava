@@ -56,6 +56,7 @@ s.setTotalAmountPaid(amount);
         User s=userRepository.findById(userId).get();
         Subscription subscription=s.getSubscription();
         SubscriptionType type=s.getSubscription().getSubscriptionType();
+        int diff=0;
         if(type.equals(SubscriptionType.ELITE))
         {
            throw new Exception("Already the best Subscription") ;
@@ -63,20 +64,19 @@ s.setTotalAmountPaid(amount);
         if(type==SubscriptionType.BASIC)
         {
            subscription.setSubscriptionType(SubscriptionType.PRO);
-           int diff=800+250*subscription.getNoOfScreensSubscribed()-subscription.getTotalAmountPaid();
+           diff=800+250*subscription.getNoOfScreensSubscribed()-subscription.getTotalAmountPaid();
             subscriptionRepository.save(subscription);
-            return diff;
+
         }
         if(type==SubscriptionType.PRO)
         {
             subscription.setSubscriptionType(SubscriptionType.ELITE);
-            int diff=1000+350*subscription.getNoOfScreensSubscribed()-subscription.getTotalAmountPaid();
+            diff=1000+350*subscription.getNoOfScreensSubscribed()-subscription.getTotalAmountPaid();
             subscriptionRepository.save(subscription);
-            return diff;
+
         }
 
-
-return null;
+        return diff;
     }
 
     public Integer calculateTotalRevenueOfHotstar(){
