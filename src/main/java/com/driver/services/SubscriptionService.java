@@ -10,6 +10,7 @@ import com.driver.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class SubscriptionService {
 
         }
 s.setTotalAmountPaid(amount);
+       // s.setStartSubscriptionDate(Date.from(Instant.now()));
         subscriptionRepository.save(s);
 
         return amount;
@@ -66,16 +68,13 @@ s.setTotalAmountPaid(amount);
            subscription.setSubscriptionType(SubscriptionType.PRO);
            diff=800+250*subscription.getNoOfScreensSubscribed()-subscription.getTotalAmountPaid();
             subscriptionRepository.save(subscription);
-
         }
-        if(type==SubscriptionType.PRO)
+        else if(type==SubscriptionType.PRO)
         {
             subscription.setSubscriptionType(SubscriptionType.ELITE);
             diff=1000+350*subscription.getNoOfScreensSubscribed()-subscription.getTotalAmountPaid();
             subscriptionRepository.save(subscription);
-
         }
-
         return diff;
     }
 
